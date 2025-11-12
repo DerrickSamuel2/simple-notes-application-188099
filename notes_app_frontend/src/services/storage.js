@@ -1,11 +1,26 @@
 const NAMESPACE = 'NOTES_V1';
 
+/**
+ * INTERNAL: Safe accessors for localStorage in both browser and SSR.
+ */
+function getLS() {
+  if (typeof window === 'undefined') return null;
+  try {
+    return window.localStorage ?? null;
+  } catch {
+    return null;
+  }
+}
+
 // PUBLIC_INTERFACE
 export function getItemJSON(key, fallback = null) {
   /** Get a namespaced item from localStorage and parse JSON safely. */
+  const ls = getLS();
+  if (!ls) return fallback;
   try {
-    const raw = window.localStorage.getItem(`${NAMESPACE}:${key}`);
-    if (!raw) return fallback;
+    const raw = ls.getItem(`${NAMESPACE}:${key}`);
+    if (typeof raw !== 'string' || raw.length === 0) return fallback;
+    // Only parse valid JSON strings
     return JSON.parse(raw);
   } catch {
     return fallback;
@@ -15,9 +30,11 @@ export function getItemJSON(key, fallback = null) {
 // PUBLIC_INTERFACE
 export function setItemJSON(key, value) {
   /** Set a namespaced JSON item into localStorage, safely stringified. */
+  const ls = getLS();
+  if (!ls) return false;
   try {
     const raw = JSON.stringify(value);
-    window.localStorage.setItem(`${NAMESPACE}:${key}`, raw);
+    ls.setItem(`${NAMESPACE}:${key}`, raw);
     return true;
   } catch {
     return false;
@@ -27,8 +44,10 @@ export function setItemJSON(key, value) {
 // PUBLIC_INTERFACE
 export function removeItem(key) {
   /** Remove a namespaced item from localStorage. */
+  const ls = getLS();
+  if (!ls) return false;
   try {
-    window.localStorage.removeItem(`${NAMESPACE}:${key}`);
+    ls.removeItem(`${NAMESPACE}:${key}`);
     return true;
   } catch {
     return false;
