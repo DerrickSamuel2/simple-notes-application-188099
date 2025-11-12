@@ -1,42 +1,38 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import './App.css';
+'use client';
 
-// Components
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import './globals.css';
 import Header from './components/Header';
 import SearchBar from './components/SearchBar';
 import NoteList from './components/NoteList';
 import NoteEditor from './components/NoteEditor';
 import ConfirmDialog from './components/ConfirmDialog';
-
-// Services
-import * as notesApi from './services/notesApi';
+import * as notesApi from '../src/services/notesApi';
 
 // PUBLIC_INTERFACE
-function App() {
-  /** App Theme */
+export default function HomePage() {
+  /**
+   * Notes list page ("/"): shows notes with search, creates via modal and allows edit/delete.
+   * Uses localStorage-based services to persist data.
+   */
   const [theme, setTheme] = useState(() => {
+    if (typeof window === 'undefined') return 'light';
     const saved = window.localStorage.getItem('APP_THEME');
     return saved || 'light';
   });
-
-  /** Notes state */
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedNote, setSelectedNote] = useState(null);
-
-  /** UI state */
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const noteToDeleteRef = useRef(null);
 
-  // Persist and apply theme
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     window.localStorage.setItem('APP_THEME', theme);
   }, [theme]);
 
-  // Initial load and seed
   useEffect(() => {
     let mounted = true;
     (async () => {
@@ -54,6 +50,7 @@ function App() {
         }
         if (mounted) setNotes(list);
       } catch (e) {
+        // eslint-disable-next-line no-console
         console.error('Failed loading notes', e);
       } finally {
         if (mounted) setLoading(false);
@@ -108,6 +105,7 @@ function App() {
       await notesApi.deleteNote(note.id);
       setNotes((prev) => prev.filter((n) => n.id !== note.id));
     } catch (e) {
+      // eslint-disable-next-line no-console
       console.error('Delete failed', e);
     } finally {
       setIsConfirmOpen(false);
@@ -127,36 +125,14 @@ function App() {
       setIsEditorOpen(false);
       setSelectedNote(null);
     } catch (e) {
+      // eslint-disable-next-line no-console
       console.error('Save failed', e);
     }
   };
 
   return (
-    <div className="app">
-      <header className="header" role="banner">
-        <div className="container header-inner">
-          <div className="brand" aria-label="Application brand">
-            <h1 className="brand-title" aria-label="Simple Notes title">Simple Notes</h1>
-            <span className="brand-badge" aria-hidden="true">Ocean</span>
-          </div>
-
-          <button
-            className="btn btn-ghost"
-            onClick={toggleTheme}
-            aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-            title="Toggle theme"
-          >
-            <span className="icon" aria-hidden="true">
-              {theme === 'light' ? '🌙' : '☀️'}
-            </span>
-            {theme === 'light' ? 'Dark' : 'Light'}
-          </button>
-          <button className="btn btn-primary" onClick={handleCreateNew} aria-label="Create new note">
-            + New Note
-          </button>
-        </div>
-      </header>
-
+    <>
+      <Header theme={theme} onToggleTheme={toggleTheme} onNew={handleCreateNew} />
       <main className="container" role="main">
         <SearchBar
           value={searchQuery}
@@ -209,8 +185,6 @@ function App() {
         onCancel={() => setIsConfirmOpen(false)}
         onConfirm={handleConfirmDelete}
       />
-    </div>
+    </>
   );
 }
-
-export default App;
