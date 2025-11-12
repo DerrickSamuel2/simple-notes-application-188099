@@ -3,8 +3,8 @@
 This frontend has been migrated from Create React App to Next.js (App Router).
 
 How to run:
-- Development: npm run dev (binds to 0.0.0.0:3000)
-- Development (preview-safe): npm run dev:preview (prevents preview runners from appending extra args)
+- Development: npm run dev (binds to 0.0.0.0:$PORT, default 3000; wrapper ignores extra args)
+- Development (preview-safe): npm run dev:preview (same as dev; prevents preview runners from appending extra args)
 - Build: npm run build
 - Start: npm start (binds to 0.0.0.0:3000)
 

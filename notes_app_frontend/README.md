@@ -6,7 +6,7 @@ Modern, lightweight notes UI using Next.js App Router and a clean Ocean Professi
 
 From the notes_app_frontend directory:
 
-- Development (binds to 0.0.0.0:3000):
+- Development (binds to 0.0.0.0:$PORT, default 3000):
   - npm run dev
 - Development (preview-safe; avoids unsupported flags like --host):
   - npm run dev:preview
