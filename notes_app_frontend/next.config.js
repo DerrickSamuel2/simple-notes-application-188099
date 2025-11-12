@@ -1,8 +1,7 @@
 const nextConfig = {
+  // Enable React strict mode to highlight potential problems
   reactStrictMode: true,
-  experimental: {
-    appDir: true
-  },
+  // Standalone output improves Docker/serverless deployment by bundling required files
   output: 'standalone'
 };
 
