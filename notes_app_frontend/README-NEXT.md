@@ -3,9 +3,15 @@
 This frontend has been migrated from Create React App to Next.js (App Router).
 
 How to run:
-- Development: npm run dev (http://localhost:3000)
+- Development: npm run dev (binds to 0.0.0.0:3000)
+- Development (preview-safe): npm run dev:start (prevents preview runners from appending extra args)
 - Build: npm run build
-- Start: npm start (http://localhost:3000)
+- Start: npm start (binds to 0.0.0.0:3000)
+
+Port/Host:
+- We set HOST=0.0.0.0 and PORT=3000 via cross-env in package.json.
+- Avoid passing flags like --host/--port from your runner. If your platform automatically appends them (e.g., npm run dev -- --port ... --host ...), use "npm run dev:start" instead.
+- Readiness log: Next.js will print "ready - started server on 0.0.0.0:3000" when dev server is healthy.
 
 Routes:
 - /           -> Notes list with search, create, edit, delete (modal)
