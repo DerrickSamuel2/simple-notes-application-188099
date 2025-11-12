@@ -27,3 +27,10 @@ Environment variables:
 
 Notes data:
 - Currently uses localStorage-based services in src/services/*. For a backend, adapt src/services/notesApi.js to call your API.
+
+Troubleshooting (stale chunk/module errors):
+- If you encounter an error like "Cannot find module './682.js' from .next/server/webpack-runtime.js", clean the build output and caches, then re-run:
+  - npm run dev:clean    # removes .next and node_modules/.cache, then starts dev
+  - npm run rebuild      # removes caches then runs a fresh next build
+- Ensure no code imports from '.next' or relies on build-time chunk names (this project does not).
+- Avoid experimental webpack customizations that could affect chunking (none are used here).
